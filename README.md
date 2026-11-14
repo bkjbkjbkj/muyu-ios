@@ -13,7 +13,7 @@ SwiftUI 原生应用，最低 iOS 17。支持文字和多图提问、拍照、�
 
 首次上传若看不到 Actions：检查 `.github/workflows/ios.yml` 是否在正确位置，并在仓库 Actions 页面启用 Actions。GitHub 私有仓库的 macOS 构建额度及费用以账号实际显示为准。
 
-**交付状态：** 此项目在 Windows 上编写；交付包不是已编译 IPA。真正的 Swift 编译、核心校验和 IPA 打包由上述 macOS 工作流执行。尚未完成云端实跑时，不应把源码检查视为构建通过。
+**交付状态：** 已于 2026 年 11 月 14 日在 GitHub macOS 15 / Xcode 16.4 环境完成真实云端构建，43 项核心校验全部通过。对应构建为 `https://github.com/bkjbkjbkj/muyu-ios/actions/runs/43550347159`，应用源码提交为 `17c91672172924181581e7e4adacd0a061feba13`。已交付 `Muyu-unsigned.ipa`，仍需你自行签名。未使用你的 API 密钥进行真实模型联网测试，也未在你的 iPhone 上安装验证。
 
 ## 在手机上连接 AI
 
