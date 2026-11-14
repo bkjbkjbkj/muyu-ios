@@ -1,0 +1,60 @@
+name: Build unsigned iPhone IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: Bundle identifier used for the unsigned app
+        required: true
+        default: com.bkjbkjbkj.muyu
+        type: string
+  push:
+    branches: [main, master]
+    paths:
+      - 'Muyu/**'
+      - 'Muyu.xcodeproj/**'
+      - 'scripts/**'
+      - '.github/workflows/ios.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      MUYU_BUNDLE_ID: ${{ inputs.bundle_id || 'com.bkjbkjbkj.muyu' }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Show selected Xcode
+        run: xcodebuild -version
+      - name: Verify API and streaming core
+        run: |
+          mkdir -p build
+          swiftc Muyu/ChatCore.swift scripts/CoreChecks.swift -o build/core-checks
+          build/core-checks
+      - name: Build and package unsigned IPA
+        run: bash scripts/build-unsigned.sh "$MUYU_BUNDLE_ID"
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Muyu-unsigned-ipa
+          path: |
+            build/Muyu-unsigned.ipa
+            build/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Muyu-build-log
+          path: build/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
